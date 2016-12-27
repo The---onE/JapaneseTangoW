@@ -1,2 +1,22 @@
 <!--pages/tango/mission.wxml-->
-<text>pages/tango/mission.wxml</text>
+<view class="box">
+  <view class="top">
+    <view id="counter">
+      <text>今日复习:{{review}}\n今日已记:{{study}}</text>
+    </view>
+    <view id="last">
+      <text>{{last_flag}}{{last_pronunciation}}\n{{last_writing}}\n[{{last_part}}]{{laset_meaning}}</text>
+    </view>
+  </view>
+  <view class="center">
+    <view id="tango">
+      <text>{{pronunciation}}{{tone}}</text>
+      <text>{{writing}}</text>
+      <text>[{{part}}]{{meaning}}</text>
+    </view>
+  </view>
+  <view class="bottom">
+    <button id="remember" bindtap="rememberTap">记住了</button>
+    <button id="forget" bindtap="forgetTap">没记住</button>
+  </view>
+</view>
