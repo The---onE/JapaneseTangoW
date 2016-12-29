@@ -2,21 +2,21 @@
 <view class="box">
   <view class="top">
     <view id="counter">
-      <text>今日复习:{{review}}\n今日已记:{{study}}</text>
+      <text>本次复习:{{review}}\n本次学习:{{study}}</text>
     </view>
     <view id="last">
-      <text>{{last_flag}}{{last_pronunciation}}\n{{last_writing}}\n[{{last_part}}]{{laset_meaning}}</text>
+      <text>{{last_flag}}{{last_pronunciation}}{{last_tone}}\n{{last_writing}}\n{{last_part}}{{last_meaning}}</text>
     </view>
   </view>
   <view class="center">
     <view id="tango">
-      <text>{{pronunciation}}{{tone}}</text>
-      <text>{{writing}}</text>
-      <text>[{{part}}]{{meaning}}</text>
+      <text id="pronunciation">{{pronunciation}}{{tone}}</text>
+      <text id="writing">{{writing}}</text>
+      <text id="meaning">{{part}}{{meaning}}</text>
     </view>
   </view>
   <view class="bottom">
-    <button id="remember" bindtap="rememberTap">记住了</button>
+    <button id="remember" bindtap="rememberTap" bindlongtap="foreverTap">记住了</button>
     <button id="forget" bindtap="forgetTap">没记住</button>
   </view>
 </view>
