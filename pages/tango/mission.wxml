@@ -4,7 +4,7 @@
     <view id="counter">
       <text>本次复习:{{review}}\n本次学习:{{study}}</text>
     </view>
-    <view id="last">
+    <view id="last" bindtap='lastTap'>
       <text>{{last_flag}}{{last_pronunciation}}{{last_tone}}\n{{last_writing}}\n{{last_part}}{{last_meaning}}</text>
     </view>
   </view>

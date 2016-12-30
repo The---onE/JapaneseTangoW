@@ -112,7 +112,7 @@ Page({
       content: '没记住',
       success: function (res) {
         if (res.confirm) {
-          console.info("确定")
+          console.info("确定");
         }
         //选取新单词
         var tango = tangoList[parseInt(Math.random() * size)];
@@ -134,6 +134,9 @@ Page({
     var tango = tangoList[parseInt(Math.random() * size)];
     //显示新单词
     this.showNewTango(tango, true);
+  },
+  lastTap: function () {
+    this.showNewTango(lastTango);
   },
   //显示新的单词
   showNewTango: function (tango, flag) {
@@ -163,6 +166,18 @@ Page({
         last_writing: lastTango.get('Writing'), //上个写法
         last_part: part, //上个词性
         last_meaning: lastTango.get('Meaning'), //上个意思
+      })
+    } else {
+      //没有上个单词则不显示
+      lastTango = null;
+      this.setData({
+        last_id: '', //上个ID
+        last_flag: '', //上个正误
+        last_pronunciation: '', //上个读音
+        last_tone: '', //上个音调
+        last_writing: '', //上个写法
+        last_part: '', //上个词性
+        last_meaning: '', //上个意思
       })
     }
     //将新单词设为当前单词
