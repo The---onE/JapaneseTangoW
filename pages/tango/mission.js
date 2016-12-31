@@ -5,6 +5,7 @@ var app = getApp()
 
 //获取LeanCloud对象
 const AV = require('../../libs/av-weapp.js');
+
 var longTapId = ''; //长按记住了的单词ID
 var tangoList = {}; //本次任务选择的单词列表
 var size = 20; //本次任务选择的单词数
@@ -14,7 +15,24 @@ var currentTango; //当前单词
 var lastTango; //上个单词
 var lastFlag; //上个正误
 
-var toneArray = ['◎', '①', '②', '③', '④', '⑤', '⑥', '⑦']; //音调格式
+var REMEMBER_SCORE = 7; //记住分数
+var TIRED_COEFFICIENT = 35; //
+var REMEMBER_MIN_SCORE = 4; //记住最低分数
+var FORGET_SCORE = -3; //忘记分数
+var REMEMBER_FOREVER_SCORE = 64; //彻底记住分数
+var REVIEW_FREQUENCY = 5; //复习系数
+var TODAY_CONSECUTIVE_REVIEW_MAX = 10; //最大连续复习
+
+var INTERVAL_TIME_MIN = 500; //防误触最小间隔
+var NEW_TANGO_DELAY = 1000; //答案显示前进行操作的延迟时间
+
+var pronunciationDelay = 2500; //读音延迟时间
+var writingDelay = 3000; //写法延迟时间
+var meaningDelay = 3500; //意思延迟时间
+
+var DEFAULT_GOAL = 30;
+
+var TONE_ARRAY = ['◎', '①', '②', '③', '④', '⑤', '⑥', '⑦']; //音调格式
 
 Page({
   //初始数据
@@ -57,7 +75,7 @@ Page({
       max = count;
       var query = new AV.Query('TangoList');
       //跳过的单词数
-      var start = parseInt(Math.random() * max) - size;
+      var start = parseInt(Math.random() * (max - size));
       query.skip(start);
       query.limit(size);
       query.find().then(function (result) {
@@ -149,8 +167,8 @@ Page({
       //设置音调格式
       var tone = lastTango.get('Tone');
       var toneStr = '';
-      if (tone >= 0 && tone < toneArray.length) {
-        toneStr = toneArray[tone];
+      if (tone >= 0 && tone < TONE_ARRAY.length) {
+        toneStr = TONE_ARRAY[tone];
       }
       //设置词性格式
       var part = lastTango.get('PartOfSpeech');
@@ -185,8 +203,8 @@ Page({
     //设置音调格式
     var tone = currentTango.get('Tone');
     var toneStr = '';
-    if (tone >= 0 && tone < toneArray.length) {
-      toneStr = toneArray[tone];
+    if (tone >= 0 && tone < TONE_ARRAY.length) {
+      toneStr = TONE_ARRAY[tone];
     }
     //设置词性格式
     var part = currentTango.get('PartOfSpeech');
@@ -201,6 +219,61 @@ Page({
       writing: currentTango.get('Writing'), //写法
       part: part, //词性
       meaning: currentTango.get('Meaning'), //意思
-    })
+    });
+    var r = parseInt(Math.random() * 3);
+    switch (r) {
+      case 0:
+        this.delayPronunciation(currentTango.get('Pronunciation'), toneStr);
+        this.delayWriting(currentTango.get('Writing'));
+        break;
+      case 1:
+        this.delayPronunciation(currentTango.get('Pronunciation'), toneStr);
+        this.delayMeaning(part, currentTango.get('Meaning'));
+        break;
+      case 2:
+        this.delayWriting(currentTango.get('Writing'));
+        this.delayMeaning(part, currentTango.get('Meaning'));
+        break;
+    }
+  },
+  //延迟读音
+  delayPronunciation: function (pronunciation, tone) {
+    let that = this;
+    that.setData({
+      pronunciation: '', //读音
+      tone: '', //音调
+    });
+    setTimeout(function () {
+      that.setData({
+        pronunciation: pronunciation, //读音
+        tone: tone, //音调
+      });
+    }, writingDelay);
+  },
+  //延迟写法
+  delayWriting: function (writing) {
+    let that = this;
+    that.setData({
+      writing: '', //写法
+    });
+    setTimeout(function () {
+      that.setData({
+        writing: writing, //写法
+      });
+    }, pronunciationDelay);
+  },
+  //延迟意思
+  delayMeaning: function (part, meaning) {
+    let that = this;
+    that.setData({
+      part: '', //词性
+      meaning: '', //意思
+    });
+    setTimeout(function () {
+      that.setData({
+        part: part, //词性
+        meaning: meaning, //意思
+      });
+    }, meaningDelay);
   },
 })

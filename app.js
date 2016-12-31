@@ -6,17 +6,18 @@ App({
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
   },
-  getUserInfo:function(cb){
+  getUserInfo: function (cb) {
     var that = this
-    if(this.globalData.userInfo){
+    if (this.globalData.userInfo) {
       typeof cb == "function" && cb(this.globalData.userInfo)
-    }else{
+    } else {
       //调用登录接口
       wx.login({
-        success: function () {
+        success: function (res) {
+          console.info(res.code);
           wx.getUserInfo({
-            success: function (res) {
-              that.globalData.userInfo = res.userInfo
+            success: function (user) {
+              that.globalData.userInfo = user.userInfo
               typeof cb == "function" && cb(that.globalData.userInfo)
             }
           })
@@ -24,14 +25,15 @@ App({
       })
     }
   },
-  globalData:{
-    userInfo:null
+  globalData: {
+    userInfo: null,
+    openId: null,
   }
 })
 
 //初始化LeanCloud对象
 const AV = require('./libs/av-weapp.js');
-AV.init({ 
- appId: 'JU6HFVAzc5KrBnJBTMc7QbTe-gzGzoHsz', 
- appKey: 'ptscFhYmavGYVvIGCikAczN2', 
+AV.init({
+  appId: 'JU6HFVAzc5KrBnJBTMc7QbTe-gzGzoHsz',
+  appKey: 'ptscFhYmavGYVvIGCikAczN2',
 });
